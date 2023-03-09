@@ -25,22 +25,12 @@ func main() {
 
 	fmt.Fprintf(conn, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n", fileName, serverHost)
 
-	reader := bufio.NewReader(conn)
-	for {
-		line, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading from server:", err)
-			os.Exit(1)
-		}
-		fmt.Print(line)
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fmt.Printf("%s\n", line)
 		if line == "\r\n" {
 			break
 		}
 	}
-	fileContents, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading from server:", err)
-		os.Exit(1)
-	}
-	fmt.Print(fileContents)
 }
